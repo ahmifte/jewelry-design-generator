@@ -28,7 +28,7 @@ export PYTEST_MOCK_MODE=true
 
 # Run tests with coverage
 echo "Running tests with coverage..."
-python -m pytest --cov=python_jewelry_design_gen --cov-report=term
+python -m pytest --cov=src.python_jewelry_design_gen --cov-report=term
 
 # Run optional test batch
 if [ "$1" == "--run-batch" ]; then

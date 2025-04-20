@@ -46,7 +46,7 @@ uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
-# Add your Meshy API key.
+# Add your Meshy API key
 echo "MESHY_API_KEY=your_api_key_here" > .env
 
 # Create your first design!
@@ -77,6 +77,19 @@ Run tests with our test script:
 
 # Run tests with a sample batch
 ./scripts/run_tests.py --run-batch
+
+# Diagnose test and coverage issues
+./scripts/diagnose_tests.py
+```
+
+Note: When running coverage manually, use the correct module path:
+
+```bash
+# Correct coverage path for the module
+python -m pytest --cov=src.python_jewelry_design_gen
+
+# For CI/CD workflows, include XML report
+python -m pytest --cov=src.python_jewelry_design_gen --cov-report=xml
 ```
 
 ## Meshy Integration
