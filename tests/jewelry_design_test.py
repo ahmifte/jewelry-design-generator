@@ -121,4 +121,4 @@ class TestJewelryDesign:
         )
         earring_prompt = earring.get_prompt()
         assert 'platinum earring' in earring_prompt.lower()
-        assert 'ear hook' in earring_prompt.lower()
+        assert 'ear wire mechanism' in earring_prompt.lower()

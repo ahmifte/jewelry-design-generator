@@ -33,14 +33,26 @@ jobs:
         source .venv/bin/activate
         uv pip install -e ".[dev]"
 
+    - name: Check directory structure
+      run: |
+        echo "Checking directory structure..."
+        ls -la
+        echo "Contents of scripts directory (if exists):"
+        ls -la scripts || echo "scripts directory not found"
+
     - name: Test with pytest
       env:
         MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
         PYTEST_MOCK_MODE: "true"
       run: |
         source .venv/bin/activate
-        # Run the diagnostic script first to help debug any issues
-        python scripts/diagnose_tests.py || true
+        # Skip the diagnostic script if it doesn't exist
+        if [ -f "scripts/diagnose_tests.py" ]; then
+          echo "Running diagnostic script..."
+          python scripts/diagnose_tests.py || true
+        else
+          echo "Diagnostic script not found. Skipping..."
+        fi
         # Run the actual tests with correct coverage path
         python -m pytest tests/ --cov=src.python_jewelry_design_gen --cov-report=xml
 
