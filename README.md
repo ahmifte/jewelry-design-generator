@@ -26,10 +26,10 @@ Built with:
 Here are some stunning designs created with this tool:
 
 ### Classic Silver Ring
-<img src="examples/ring_example.png" alt="Silver Ring" width="250"/>
+<img src="examples/ring_example.png" alt="Silver Ring" width="350"/>
 
 ### Silver Pendant
-<img src="examples/pendant_example.png" alt="Silver Pendant" width="250"/>
+<img src="examples/pendant_example.png" alt="Silver Pendant" width="350"/>
 
 ## Quick Start
 
