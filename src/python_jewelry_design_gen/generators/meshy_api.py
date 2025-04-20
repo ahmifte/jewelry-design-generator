@@ -1,16 +1,18 @@
 """Client for the Meshy.ai API."""
+from __future__ import annotations
+
+import json
+import logging
+import time
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
 
 import requests
-import time
-from typing import Dict, Any, List, Optional
-import logging
-from pathlib import Path
-import json
-
-from python_jewelry_design_gen.utils.config import (
-    get_meshy_api_key,
-    load_config
-)
+from python_jewelry_design_gen.utils.config import get_meshy_api_key
+from python_jewelry_design_gen.utils.config import load_config
 from python_jewelry_design_gen.utils.file_utils import download_file
 
 # Set up logging
@@ -23,8 +25,8 @@ class MeshyAPIError(Exception):
     def __init__(
         self,
         message: str,
-        status_code: Optional[int] = None,
-        response: Optional[Dict[str, Any]] = None,
+        status_code: int | None = None,
+        response: dict[str, Any] | None = None,
     ):
         self.message = message
         self.status_code = status_code
@@ -37,8 +39,8 @@ class MeshyAPI:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        base_url: Optional[str] = None
+        api_key: str | None = None,
+        base_url: str | None = None,
     ):
         """
         Initialize the Meshy API client.
@@ -52,24 +54,24 @@ class MeshyAPI:
 
         self.api_key = api_key or get_meshy_api_key()
         self.base_url = base_url or config.get(
-            "meshy_api_base_url", "https://api.meshy.ai"
+            'meshy_api_base_url', 'https://api.meshy.ai',
         )
 
         self.headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
+            'Authorization': f'Bearer {self.api_key}',
+            'Content-Type': 'application/json',
         }
 
     def create_text_to_3d_preview(
         self,
         prompt: str,
-        art_style: str = "realistic",
+        art_style: str = 'realistic',
         should_remesh: bool = True,
-        topology: str = "quad",
+        topology: str = 'quad',
         target_polycount: int = 100000,
-        symmetry_mode: str = "on",
-        seed: Optional[int] = None,
-        ai_model: str = "meshy-4",
+        symmetry_mode: str = 'on',
+        seed: int | None = None,
+        ai_model: str = 'meshy-4',
     ) -> str:
         """
         Create a Text to 3D Preview task.
@@ -90,49 +92,51 @@ class MeshyAPI:
         Raises:
             MeshyAPIError: If the API request fails.
         """
-        endpoint = f"{self.base_url}/openapi/v2/text-to-3d"
+        endpoint = f'{self.base_url}/openapi/v2/text-to-3d'
 
         payload = {
-            "mode": "preview",
-            "prompt": prompt,
-            "art_style": art_style,
-            "should_remesh": should_remesh,
-            "topology": topology,
-            "target_polycount": target_polycount,
-            "symmetry_mode": symmetry_mode,
-            "ai_model": ai_model,
+            'mode': 'preview',
+            'prompt': prompt,
+            'art_style': art_style,
+            'should_remesh': should_remesh,
+            'topology': topology,
+            'target_polycount': target_polycount,
+            'symmetry_mode': symmetry_mode,
+            'ai_model': ai_model,
         }
 
         # Add optional fields if provided
         if seed is not None:
-            payload["seed"] = seed
+            payload['seed'] = seed
 
         try:
             response = requests.post(
-                endpoint, headers=self.headers, json=payload)
+                endpoint, headers=self.headers, json=payload,
+            )
             response.raise_for_status()
 
-            result = response.json().get("result")
+            result = response.json().get('result')
             if not result:
                 raise MeshyAPIError(
-                    "No task ID returned in response", response=response.json()
+                    'No task ID returned in response', response=response.json(),
                 )
 
             return result
 
         except requests.RequestException as e:
             status_code = e.response.status_code if hasattr(
-                e, "response") else None
+                e, 'response',
+            ) else None
             response_data = None
 
-            if hasattr(e, "response") and e.response is not None:
+            if hasattr(e, 'response') and e.response is not None:
                 try:
                     response_data = e.response.json()
                 except (ValueError, json.JSONDecodeError):
-                    response_data = {"raw": e.response.text}
+                    response_data = {'raw': e.response.text}
 
             raise MeshyAPIError(
-                f"Error creating preview task: {str(e)}",
+                f'Error creating preview task: {str(e)}',
                 status_code=status_code,
                 response=response_data,
             ) from e
@@ -141,7 +145,7 @@ class MeshyAPI:
         self,
         preview_task_id: str,
         enable_pbr: bool = True,
-        texture_prompt: Optional[str] = None,
+        texture_prompt: str | None = None,
     ) -> str:
         """
         Create a Text to 3D Refine task.
@@ -157,49 +161,51 @@ class MeshyAPI:
         Raises:
             MeshyAPIError: If the API request fails.
         """
-        endpoint = f"{self.base_url}/openapi/v2/text-to-3d"
+        endpoint = f'{self.base_url}/openapi/v2/text-to-3d'
 
         payload = {
-            "mode": "refine",
-            "preview_task_id": preview_task_id,
-            "enable_pbr": enable_pbr,
+            'mode': 'refine',
+            'preview_task_id': preview_task_id,
+            'enable_pbr': enable_pbr,
         }
 
         # Add optional fields if provided
         if texture_prompt:
-            payload["texture_prompt"] = texture_prompt
+            payload['texture_prompt'] = texture_prompt
 
         try:
             response = requests.post(
-                endpoint, headers=self.headers, json=payload)
+                endpoint, headers=self.headers, json=payload,
+            )
             response.raise_for_status()
 
-            result = response.json().get("result")
+            result = response.json().get('result')
             if not result:
                 raise MeshyAPIError(
-                    "No task ID returned in response", response=response.json()
+                    'No task ID returned in response', response=response.json(),
                 )
 
             return result
 
         except requests.RequestException as e:
             status_code = e.response.status_code if hasattr(
-                e, "response") else None
+                e, 'response',
+            ) else None
             response_data = None
 
-            if hasattr(e, "response") and e.response is not None:
+            if hasattr(e, 'response') and e.response is not None:
                 try:
                     response_data = e.response.json()
                 except (ValueError, json.JSONDecodeError):
-                    response_data = {"raw": e.response.text}
+                    response_data = {'raw': e.response.text}
 
             raise MeshyAPIError(
-                f"Error creating refine task: {str(e)}",
+                f'Error creating refine task: {str(e)}',
                 status_code=status_code,
                 response=response_data,
             ) from e
 
-    def get_text_to_3d_task(self, task_id: str) -> Dict[str, Any]:
+    def get_text_to_3d_task(self, task_id: str) -> dict[str, Any]:
         """
         Get details of a Text to 3D task.
 
@@ -212,7 +218,7 @@ class MeshyAPI:
         Raises:
             MeshyAPIError: If the API request fails.
         """
-        endpoint = f"{self.base_url}/openapi/v2/text-to-3d/{task_id}"
+        endpoint = f'{self.base_url}/openapi/v2/text-to-3d/{task_id}'
 
         try:
             response = requests.get(endpoint, headers=self.headers)
@@ -222,17 +228,18 @@ class MeshyAPI:
 
         except requests.RequestException as e:
             status_code = e.response.status_code if hasattr(
-                e, "response") else None
+                e, 'response',
+            ) else None
             response_data = None
 
-            if hasattr(e, "response") and e.response is not None:
+            if hasattr(e, 'response') and e.response is not None:
                 try:
                     response_data = e.response.json()
                 except (ValueError, json.JSONDecodeError):
-                    response_data = {"raw": e.response.text}
+                    response_data = {'raw': e.response.text}
 
             raise MeshyAPIError(
-                f"Error getting task details: {str(e)}",
+                f'Error getting task details: {str(e)}',
                 status_code=status_code,
                 response=response_data,
             ) from e
@@ -241,9 +248,9 @@ class MeshyAPI:
         self,
         task_id: str,
         polling_interval: float = 5.0,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         progress_callback=None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Wait for a task to complete.
 
@@ -264,8 +271,8 @@ class MeshyAPI:
 
         while True:
             task = self.get_text_to_3d_task(task_id)
-            status = task.get("status")
-            progress = task.get("progress", 0)
+            status = task.get('status')
+            progress = task.get('progress', 0)
 
             # Call progress callback if provided and progress has changed
             if progress_callback and progress != last_progress:
@@ -273,23 +280,23 @@ class MeshyAPI:
                 last_progress = progress
 
             # Check if task is complete
-            if status == "SUCCEEDED":
+            if status == 'SUCCEEDED':
                 return task
-            elif status == "FAILED" or status == "CANCELED":
-                error_msg = "Task failed"
-                task_error = task.get("task_error", {})
-                if task_error and task_error.get("message"):
-                    error_msg = task_error.get("message")
+            elif status == 'FAILED' or status == 'CANCELED':
+                error_msg = 'Task failed'
+                task_error = task.get('task_error', {})
+                if task_error and task_error.get('message'):
+                    error_msg = task_error.get('message')
 
                 raise MeshyAPIError(
-                    f"Task failed with status {status}: {error_msg}",
-                    response=task
+                    f'Task failed with status {status}: {error_msg}',
+                    response=task,
                 )
 
             # Check for timeout
             if timeout and (time.time() - start_time) > timeout:
                 raise MeshyAPIError(
-                    f"Task timed out after {timeout} seconds", response=task
+                    f'Task timed out after {timeout} seconds', response=task,
                 )
 
             # Wait before polling again
@@ -297,12 +304,12 @@ class MeshyAPI:
 
     def download_3d_model(
         self,
-        task: Dict[str, Any],
+        task: dict[str, Any],
         output_dir: str,
-        formats: List[str] = ["glb"],
+        formats: list[str] = ['glb'],
         download_textures: bool = True,
         show_progress: bool = True,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """
         Download 3D models and textures from a completed task.
 
@@ -325,51 +332,57 @@ class MeshyAPI:
         downloaded_files = {}
 
         # Download model files
-        if "model_urls" in task:
+        if 'model_urls' in task:
             for fmt in formats:
-                if fmt in task["model_urls"]:
-                    url = task["model_urls"][fmt]
-                    filename = f"model.{fmt}"
+                if fmt in task['model_urls']:
+                    url = task['model_urls'][fmt]
+                    filename = f'model.{fmt}'
 
-                    if fmt == "obj" and "mtl" in task["model_urls"]:
+                    if fmt == 'obj' and 'mtl' in task['model_urls']:
                         # Also download MTL file for OBJ
-                        mtl_url = task["model_urls"]["mtl"]
-                        mtl_path = output_path / "model.mtl"
+                        mtl_url = task['model_urls']['mtl']
+                        mtl_path = output_path / 'model.mtl'
                         download_file(
-                            mtl_url, str(mtl_path), show_progress=show_progress
+                            mtl_url, str(mtl_path), show_progress=show_progress,
                         )
-                        downloaded_files["mtl"] = str(mtl_path)
+                        downloaded_files['mtl'] = str(mtl_path)
 
                     output_file = output_path / filename
-                    download_file(url, str(output_file),
-                                  show_progress=show_progress)
+                    download_file(
+                        url, str(output_file),
+                        show_progress=show_progress,
+                    )
                     downloaded_files[fmt] = str(output_file)
 
         # Download thumbnail if available
-        if "thumbnail_url" in task and task["thumbnail_url"]:
-            thumb_path = output_path / "thumbnail.png"
-            download_file(task["thumbnail_url"], str(thumb_path),
-                          show_progress=show_progress)
-            downloaded_files["thumbnail"] = str(thumb_path)
+        if 'thumbnail_url' in task and task['thumbnail_url']:
+            thumb_path = output_path / 'thumbnail.png'
+            download_file(
+                task['thumbnail_url'], str(thumb_path),
+                show_progress=show_progress,
+            )
+            downloaded_files['thumbnail'] = str(thumb_path)
         # Download textures if requested
         if (
             download_textures
-            and "texture_urls" in task
-            and task["texture_urls"]
+            and 'texture_urls' in task
+            and task['texture_urls']
         ):
-            textures_dir = output_path / "textures"
+            textures_dir = output_path / 'textures'
             textures_dir.mkdir(exist_ok=True)
 
-            for i, texture_set in enumerate(task["texture_urls"]):
+            for i, texture_set in enumerate(task['texture_urls']):
                 for tex_type, tex_url in texture_set.items():
-                    filename = f"texture_{i}_{tex_type}.png"
-                    if tex_type == "base_color":
+                    filename = f'texture_{i}_{tex_type}.png'
+                    if tex_type == 'base_color':
                         # Base texture has simpler name
-                        filename = f"texture_{i}.png"
+                        filename = f'texture_{i}.png'
 
                     tex_path = textures_dir / filename
-                    download_file(tex_url, str(tex_path),
-                                  show_progress=show_progress)
-                    downloaded_files[f"texture_{i}_{tex_type}"] = str(tex_path)
+                    download_file(
+                        tex_url, str(tex_path),
+                        show_progress=show_progress,
+                    )
+                    downloaded_files[f'texture_{i}_{tex_type}'] = str(tex_path)
 
         return downloaded_files

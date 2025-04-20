@@ -38,4 +38,4 @@ Each model comes with:
 - PBR texture maps (color, metallic, roughness, normal)
 - Proper UV coordinates
 - Smooth topology
-- Realistic metal properties 
+- Realistic metal properties

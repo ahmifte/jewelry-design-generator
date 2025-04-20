@@ -60,4 +60,4 @@ Want more control? Edit the `config.json` file with options like these:
   "target_polycount": 100000,
   "ai_model": "meshy-4"
 }
-``` 
+```
