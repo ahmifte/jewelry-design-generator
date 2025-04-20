@@ -1,0 +1,28 @@
+[project]
+name = "python_jewelry_design_gen"
+version = "0.1.0"
+description = "Creates jewelry 3D designs based upon a given user's prompt - it can include images or text descriptions as well as links."
+authors = [
+    {name = "ahmifte",email = "ahmediftekhar@g.ucla.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.28.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "tqdm>=4.65.0",
+    "pillow>=10.0.0",
+    "trimesh>=3.22.0",
+    "numpy>=1.24.0",
+    "click>=8.1.0",
+    "pytest (>=8.3.5,<9.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "python_jewelry_design_gen", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
