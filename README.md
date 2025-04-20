@@ -2,8 +2,6 @@
 
 Create stunning 3D jewelry designs with AI. This tool builds detailed models of rings, chains, bracelets and more in gold, silver, platinum, and other materials.
 
-![Silver Ring](examples/ring_example.png)
-
 ## Tech Stack
 
 Built with:
