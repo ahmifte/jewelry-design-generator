@@ -1,6 +1,6 @@
-# Jewelry Design Generator
+# 💎💍 AI Jewelry Design Generator 💍💎
 
-Create stunning 3D jewelry designs with AI. This tool builds detailed models of rings, chains, bracelets and more in gold, silver, platinum, and other materials.
+Create cool 3D jewelry designs with AI; builds detailed models of rings, chains, bracelets etc. in various materials.
 
 ## Tech Stack
 
@@ -23,7 +23,7 @@ Built with:
 
 ## Example Outputs
 
-Here are some stunning designs created with this tool:
+Cool designs created using this tool:
 
 ### Classic Silver Ring
 <img src="examples/ring_example.png" alt="Silver Ring" width="350"/>
@@ -51,7 +51,7 @@ echo "MESHY_API_KEY=your_api_key_here" > .env
 python main.py generate --material silver --type ring
 ```
 
-> **Note**: We've switched from Poetry to uv for package management because it's 10-100x faster! See the [uv workflow guide](docs/uv_workflow.md) for details.
+> **Note**: i opted to not use poetry and switch to uv for package management because it's 10-100x faster! See the [uv workflow guide](docs/uv_workflow.md) for details.
 
 ## Documentation
 
