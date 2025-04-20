@@ -46,7 +46,7 @@ uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e ".[dev]"
 
-# Add your Meshy API key
+# Add your Meshy API key.
 echo "MESHY_API_KEY=your_api_key_here" > .env
 
 # Create your first design!
