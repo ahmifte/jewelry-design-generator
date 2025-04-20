@@ -40,19 +40,22 @@ jobs:
         echo "Contents of scripts directory (if exists):"
         ls -la scripts || echo "scripts directory not found"
 
+    - name: Run diagnostic checks
+      run: |
+        source .venv/bin/activate
+        echo "=== Python diagnostic information ==="
+        python --version
+        echo "=== Module import test ==="
+        python -c "import src.python_jewelry_design_gen; print('Module import successful')"
+        echo "=== Test discovery ==="
+        python -m pytest --collect-only -v
+
     - name: Test with pytest
       env:
         MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
         PYTEST_MOCK_MODE: "true"
       run: |
         source .venv/bin/activate
-        # Skip the diagnostic script if it doesn't exist
-        if [ -f "scripts/diagnose_tests.py" ]; then
-          echo "Running diagnostic script..."
-          python scripts/diagnose_tests.py || true
-        else
-          echo "Diagnostic script not found. Skipping..."
-        fi
         # Run the actual tests with correct coverage path
         python -m pytest tests/ --cov=src.python_jewelry_design_gen --cov-report=xml
 

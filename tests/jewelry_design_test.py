@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from datetime import datetime
 
-import pytest
 from python_jewelry_design_gen.models.jewelry_design import ChainStyle
 from python_jewelry_design_gen.models.jewelry_design import JewelryDesign
 from python_jewelry_design_gen.models.jewelry_design import JewelryType
