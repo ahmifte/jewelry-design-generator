@@ -1,0 +1,55 @@
+[project]
+name = "python-jewelry-design-gen"
+version = "0.1.0"
+description = "A Python tool for generating 3D jewelry designs using AI"
+authors = [
+    {name = "Ahmed Iftekhar", email = "ahmediftekhar@g.ucla.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "click",
+    "requests",
+    "tqdm",
+    "python-dotenv",
+    "pillow",
+    "pydantic",
+    "trimesh",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "requests-mock",
+    "black",
+    "flake8",
+    "pre-commit",
+]
+
+[project.scripts]
+jewelry-design-gen = "python_jewelry_design_gen.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/python_jewelry_design_gen"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = "test_*"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "E501", "F401", "W503"]
+exclude = [".git", "__pycache__", "build", "dist"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
