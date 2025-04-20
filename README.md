@@ -10,7 +10,7 @@ I've built this using:
 
 - **Python 3.10+**: As the main language
 - **[Meshy AI](https://docs.meshy.ai)**: For the 3D model generation (their API is amazing for jewelry)
-- **Poetry**: Handles dependencies way better than pip alone
+- **[uv](https://github.com/astral-sh/uv)**: Ultra-fast Python package manager (10-100x faster than pip/Poetry)
 - **Asyncio**: Makes batch generation much faster with concurrent API calls
 - **Logging**: Keeps track of what's happening during generation
 
@@ -40,8 +40,11 @@ Check out these silver jewelry designs the tool created:
 git clone https://github.com/ahmifte/python-jewelry-design-gen.git
 cd python-jewelry-design-gen
 
-# Install with Poetry
-poetry install
+# Install with uv (blazing fast!)
+curl -fsSL https://astral.sh/uv/install.sh | bash  # if you don't have uv yet
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e ".[dev]"
 
 # Add your Meshy API key
 echo "MESHY_API_KEY=your_api_key_here" > .env
