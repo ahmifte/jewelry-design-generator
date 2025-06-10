@@ -21,7 +21,7 @@ pytest==8.3.5
 python-dotenv==1.1.0
 -e git+https://github.com/ahmifte/python-jewelry-design-gen.git@af9d6ecd8145500cf309063c7da6ff5b03ca7116#egg=python_jewelry_design_gen
 PyYAML==6.0.2
-requests==2.32.3
+requests==2.32.4
 tqdm==4.67.1
 trimesh==4.6.8
 typing-inspection==0.4.0
